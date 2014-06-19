@@ -1,0 +1,23 @@
+{
+    "name": "cloudmanic/laravel-api-controller",
+    "description": "An easy wrapper for API responses.",
+    "keywords": ["cloudmanic", "api"],
+    "homepage": "https://cloudmanic.com",
+    "license": "Apache",
+    "minimum-stability": "stable",
+    
+    "authors": [
+    {
+      "name": "Spicer Matthews",
+      "homepage": "http://spicermatthews.com"
+    }],
+    
+    "version": "1.0.0",
+    
+    "autoload": {
+	    "psr-4": { "Cloudmanic\\LaravelApi": "src/" }
+    },
+    
+    "require": {
+    }
+}
