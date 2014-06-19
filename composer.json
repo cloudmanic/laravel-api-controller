@@ -15,7 +15,7 @@
     "version": "1.0.0",
     
     "autoload": {
-	    "psr-4": { "Cloudmanic\\LaravelApi": "src/" }
+	    "psr-4": { "Cloudmanic\\LaravelApi\\": "src/" }
     },
     
     "require": {
