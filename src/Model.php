@@ -15,7 +15,8 @@ use \DB;
 class Model
 {	
 	public $table = '';
-	public $table_prefix = null;	
+	public $table_prefix = null;
+	public $table_id_col = 'Id';	
 	public $connection = 'mysql';
 	public $joins = null;
 	public $export_cols = [];		
@@ -27,7 +28,7 @@ class Model
 	// Construct.
 	//
 	public function __construct()
-	{
+	{	
 		// Get the table.
 		if(empty($this->table))
 		{
@@ -36,7 +37,7 @@ class Model
 		}
 		
 		// Set table prefix
-		if(empty($this->table_prefix))
+		if(! empty($this->table_prefix))
 		{
 			$this->table_prefix = $this->table;
 		}
@@ -257,21 +258,26 @@ class Model
 	} 	
 	
 	//
+	// Get by id.
+	// 
+	public function get_by_id($id)
+	{
+		$this->set_col($this->table_prefix . $this->table_id_col, $id);
+		$d = $this->get();
+		$data = (isset($d[0])) ? (array) $d[0] : false;	
+		return $data;
+	}	
+	
+	//
 	// Insert.
 	//
 	public function insert($data)
 	{	
-		// Add updated at date
- 		if(! isset($data[$this->table_prefix . 'UpdatedAt'])) 
- 		{
- 			$data[$this->table_prefix  . 'UpdatedAt'] = date('Y-m-d G:i:s');
- 		}
- 		
-		// Add created at date
- 		if(! isset($data[$this->table_prefix . 'CreatedAt'])) 
- 		{
- 			$data[$this->table_prefix . 'CreatedAt'] = date('Y-m-d G:i:s');
- 		}
+		// Set the created and and updated fields
+		$data[$this->table_prefix  . 'UpdatedAt'] = date('Y-m-d G:i:s');
+		$data[$this->table_prefix . 'CreatedAt'] = date('Y-m-d G:i:s');
+		$data['created_at'] = date('Y-m-d G:i:s');
+		$data['updated_at'] = date('Y-m-d G:i:s');		
 	
  		// Insert the data / clear the query and return the ID.
  		$this->db->insert($this->_set_data($data));
@@ -282,6 +288,21 @@ class Model
 
  		return $id;
 	}	
+	
+	//
+	// Update.
+	//
+	public function update($data, $id)
+	{	
+		// Set the created and and updated fields
+		$data[$this->table_prefix  . 'UpdatedAt'] = date('Y-m-d G:i:s');
+		$data['updated_at'] = date('Y-m-d G:i:s');	
+	
+		$this->set_col($this->table_prefix . $this->table_id_col, $id);
+	
+		$rt = $this->db->update(self::_set_data($data));
+		return $rt;
+	}		
 	
 	//
 	// Get count.
