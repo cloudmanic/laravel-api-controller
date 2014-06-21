@@ -127,7 +127,13 @@ class Controller extends \Controller
 	// Insert.
 	//
 	public function create()
-	{				
+	{		
+		// Tell the model that this is an api call.
+		if(method_exists($this->model, 'set_api'))
+		{
+			$this->model->set_api(true);	
+		}	
+			
 		// Validate this request. 
 		if($rt = $this->validate_request('create'))
 		{
@@ -173,6 +179,12 @@ class Controller extends \Controller
 	//
 	public function update($id)
 	{				
+		// Tell the model that this is an api call.
+		if(method_exists($this->model, 'set_api'))
+		{
+			$this->model->set_api(true);	
+		}	
+	
 		// A hook before we go any further.
 		if(method_exists($this, '_before_validate'))
 		{
@@ -218,6 +230,27 @@ class Controller extends \Controller
 		}
 		
 		return $this->api_response($data);
+	}	
+	
+	//
+	// Delete a record by id.
+	//
+	public function delete($_id = null)
+	{	
+		// Tell the model that this is an api call.
+		if(method_exists($this->model, 'set_api'))
+		{
+			$this->model->set_api(true);	
+		}	
+	
+		// So we can support posts as well.
+		if(is_null($_id))
+		{
+			$_id = Input::get('Id');
+		}
+
+		$this->model->delete_by_id($_id);
+		return $this->api_response();
 	}	
 	
 	// ----------------- Helper Functions ----------------- //

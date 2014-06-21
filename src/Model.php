@@ -305,6 +305,16 @@ class Model
 	}		
 	
 	//
+	// Delete by id.
+	//
+	public function delete_by_id($id)
+	{
+		$this->set_col($this->table_prefix . $this->table_id_col, $id);
+ 		$this->db->delete();
+ 		return true;
+	}	
+	
+	//
 	// Get count.
 	//
 	public function get_count()
