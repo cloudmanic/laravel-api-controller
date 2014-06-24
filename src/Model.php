@@ -16,7 +16,8 @@ class Model
 {	
 	public $table = '';
 	public $table_prefix = null;
-	public $table_id_col = 'Id';	
+	public $table_id_col = 'Id';
+	public $table_account_col = 'AccountId';	
 	public $connection = 'mysql';
 	public $joins = null;
 	public $export_cols = [];		
@@ -37,7 +38,7 @@ class Model
 		}
 		
 		// Set table prefix
-		if(! empty($this->table_prefix))
+		if(is_null($this->table_prefix))
 		{
 			$this->table_prefix = $this->table;
 		}
@@ -279,6 +280,12 @@ class Model
 		$data['created_at'] = date('Y-m-d G:i:s');
 		$data['updated_at'] = date('Y-m-d G:i:s');		
 	
+		// Set the account.
+		if(Me::get_account_id())
+		{
+			$data[$this->table_prefix . $this->table_account_col] = Me::get_account_id();	
+		}
+		
  		// Insert the data / clear the query and return the ID.
  		$this->db->insert($this->_set_data($data));
  		$id = DB::connection($this->connection)->getPdo()->lastInsertId();
@@ -300,7 +307,13 @@ class Model
 	
 		$this->set_col($this->table_prefix . $this->table_id_col, $id);
 	
-		$rt = $this->db->update(self::_set_data($data));
+		// Set the account.
+		if(Me::get_account_id())
+		{
+			$data[$this->table_prefix . $this->table_account_col] = Me::get_account_id();	
+		}	
+	
+		$rt = $this->db->update($this->_set_data($data));
 		return $rt;
 	}		
 	
