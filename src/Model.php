@@ -20,7 +20,8 @@ class Model
 	public $table_account_col = 'AccountId';	
 	public $connection = 'mysql';
 	public $joins = null;
-	public $export_cols = [];		
+	public $export_cols = [];
+	public $no_account = false;		
 	protected $db = null;	
 	protected $_extra = false;		
 	protected $_is_api = false;	
@@ -236,6 +237,12 @@ class Model
 			}
 		}		
 		
+		// Set the account.
+		if(Me::get_account_id() && (! $this->no_account))
+		{
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Me::get_account_id());
+		}			
+		
 		// Query
 		$data = $this->db->get();
 		
@@ -281,7 +288,7 @@ class Model
 		$data['updated_at'] = date('Y-m-d G:i:s');		
 	
 		// Set the account.
-		if(Me::get_account_id())
+		if(Me::get_account_id() && (! $this->no_account))
 		{
 			$data[$this->table_prefix . $this->table_account_col] = Me::get_account_id();	
 		}
@@ -308,7 +315,7 @@ class Model
 		$this->set_col($this->table_prefix . $this->table_id_col, $id);
 	
 		// Set the account.
-		if(Me::get_account_id())
+		if(Me::get_account_id() && (! $this->no_account))
 		{
 			$data[$this->table_prefix . $this->table_account_col] = Me::get_account_id();	
 		}	
