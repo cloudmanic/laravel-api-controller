@@ -388,8 +388,8 @@ class Controller extends \Controller
 		$rt = [
 			'status' => $status,
 			'data' => (! is_null($data)) ? $data : [],
-			'limit' => Input::get('limit'),
-			'offset' => Input::get('offset'),
+			'limit' => (Input::get('limit')) ? (int) Input::get('limit') : 0,
+			'offset' => (Input::get('offset')) ? (int) Input::get('offset') : 0,
 			'count' => (! is_null($data)) ? count($data) : 0,
 			'total' => ($this->model) ? $this->model->get_total() : 0,
 			'filtered' => 0,
@@ -403,7 +403,7 @@ class Controller extends \Controller
 		{
 			$this->_setup_query(false);
 			$rt['filtered'] = $this->model->get_total();
-		}
+		} 
 		
 		// Set errors.
 		if(! is_null($errors))
