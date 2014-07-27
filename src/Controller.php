@@ -309,7 +309,7 @@ class Controller extends \Controller
 		}
 		
 		// Set limit...
-		if($limit && Input::get('limit')  && (method_exists($this->model, 'limit')))
+		if($limit && Input::get('limit') && (method_exists($this->model, 'set_limit')))
 		{
 			$this->model->set_limit(Input::get('limit'));
 		}
@@ -388,10 +388,22 @@ class Controller extends \Controller
 		$rt = [
 			'status' => $status,
 			'data' => (! is_null($data)) ? $data : [],
+			'limit' => Input::get('limit'),
+			'offset' => Input::get('offset'),
 			'count' => (! is_null($data)) ? count($data) : 0,
+			'total' => ($this->model) ? $this->model->get_total() : 0,
+			'filtered' => 0,
 			'errors' => [],
 			'hash' => md5(json_encode($data))
 		];
+		
+		// If we are doing a search or some sort of filter with a limit we need to figure out how 
+		// the total number of results without the limit or offset.
+		if(Input::get('limit'))
+		{
+			$this->_setup_query(false);
+			$rt['filtered'] = $this->model->get_total();
+		}
 		
 		// Set errors.
 		if(! is_null($errors))

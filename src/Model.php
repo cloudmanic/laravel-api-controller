@@ -100,7 +100,7 @@ class Model
 	// Set limit
 	//
 	public function set_limit($limit)
-	{
+	{	
 		$this->db->take($limit);
 	 	return $this;		
 	}	
@@ -356,6 +356,20 @@ class Model
 		
 		return $r;
 	}	
+	
+	//
+	// Get the total of all rows in this table.
+	//
+	public function get_total()
+	{
+		// Set the account.
+		if(Me::get_account_id() && (! $this->no_account))
+		{
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Me::get_account_id());
+		}		
+	
+		return $this->db->count();
+	}
 	
 	// ----------------- Helper Function  -------------- //
 		
