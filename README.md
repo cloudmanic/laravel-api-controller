@@ -12,8 +12,8 @@ Sample Controller
 
 class Products extends \Cloudmanic\LaravelApi\Controller
 {
-	public $rules_create = [];
-	public $rules_update = [];
+	public $validation_create = [];
+	public $validation_update = [];
 }
 ```
 
