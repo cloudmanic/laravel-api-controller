@@ -8,6 +8,8 @@ use \Input;
 use \Request;
 use \Response;
 use \Validator;
+use \SplTempFileObject;
+use League\Csv\Writer;
 
 class Controller extends \Controller 
 {
@@ -18,6 +20,7 @@ class Controller extends \Controller
 	public $model_namespace = 'Models\\';
 	public $accept_update = null;
 	public $accept_insert = null;	
+	public $csv_meta = [ 'headers' => '', 'data' => [], 'file' => 'export.csv' ];
 	public $validation_create = [];
 	public $validation_update = [];
 	public $validation_message = [];
@@ -256,6 +259,16 @@ class Controller extends \Controller
 	// ----------------- Helper Functions ----------------- //
 	
 	//
+	// Set the data for a CSV return since it is a little special.
+	//
+	public function set_csv_return($headers, $data, $file = 'export.csv')
+	{
+		$this->csv_meta['headers'] = $headers;	
+		$this->csv_meta['data'] = $data;	
+		$this->csv_meta['file'] = $file;					
+	}
+	
+	//
 	// Setup the query. Apply any filters we might have passed in.
 	//
 	private function _setup_query($limit = true)
@@ -430,7 +443,8 @@ class Controller extends \Controller
 		// Format the return in the output passed in.
 		switch(Input::get('format'))
 		{
-			case 'php':
+			case 'php':			
+			case 'human':
 				return '<pre>' . print_r($rt, TRUE) . '</pre>';
 			break;
 			
@@ -441,6 +455,28 @@ class Controller extends \Controller
 				}
 		
 				return 'callback(' . json_encode($rt) . ')';
+			break;
+			
+			case 'csv':
+				$csv = Writer::createFromFileObject(new SplTempFileObject);
+			
+				// Custom headers?
+				if($this->csv_meta['headers'])
+				{
+					$csv->insertOne($this->csv_meta['headers']);
+				}			
+			
+				// Did we set the CSV meta stuff.
+				if($this->csv_meta['data'])
+				{
+					$csv->insertAll($this->csv_meta['data']);
+				} else
+				{
+					$csv->insertAll($rt);
+				}
+
+				$csv->output($this->csv_meta['file']);
+				die;	
 			break;
 			
 			default:
