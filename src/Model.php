@@ -272,7 +272,7 @@ class Model
 	{
 		$this->set_col($this->table_prefix . $this->table_id_col, $id);
 		$d = $this->get();
-		$data = (isset($d[0])) ? (array) $d[0] : false;	
+		$data = (isset($d[0])) ? (array) $d[0] : false;				
 		return $data;
 	}	
 	
@@ -321,6 +321,10 @@ class Model
 		}	
 	
 		$rt = $this->db->update($this->_set_data($data));
+		
+		// Reset the query.
+		$this->_setup_query();		
+				
 		return $rt;
 	}		
 	
@@ -331,6 +335,10 @@ class Model
 	{
 		$this->set_col($this->table_prefix . $this->table_id_col, $id);
  		$this->db->delete();
+ 		
+		// Reset the query.
+		$this->_setup_query();		 		
+ 		
  		return true;
 	}	
 	
