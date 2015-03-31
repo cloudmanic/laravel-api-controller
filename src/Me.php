@@ -75,6 +75,14 @@ class Me
 	}
 	
 	//
+	// Get logged in user id.
+	//
+	public static function get_id()
+	{
+		return (isset(self::$data['UsersId'])) ? self::$data['UsersId'] : 0;
+	}	
+	
+	//
 	// Get my account id.
 	//
 	public static function get_account_id()
