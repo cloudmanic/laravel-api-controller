@@ -19,6 +19,6 @@
     },
     
     "require": {
-			"league/csv": "~7.*"	
+			"league/csv": "~7.0"	
     }
 }
