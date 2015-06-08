@@ -11,7 +11,7 @@ use \Validator;
 use \SplTempFileObject;
 use League\Csv\Writer;
 
-class Controller extends \Controller 
+class Controller extends \App\Http\Controllers\Controller
 {
 	public $cached = false;
 	public $cached_time = 60;
@@ -34,7 +34,7 @@ class Controller extends \Controller
 		// Guess the model.
 		if(empty($this->model_name))
 		{
-			$tmp = explode('\\', get_called_class()); 	
+			$tmp = explode('\\', get_called_class()); 				
 			$this->model_name = $this->model_namespace . end($tmp);
 		
 			// Do nothing if this is not a real class.	
@@ -165,7 +165,6 @@ class Controller extends \Controller
 		}
 		
 		// Load model and insert data.
-		$this->model->set_api(true);
 		$data['Id'] = $this->model->insert($input);	
 		
 		// A hook before we go any further.
