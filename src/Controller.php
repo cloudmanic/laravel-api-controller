@@ -17,7 +17,7 @@ class Controller extends \App\Http\Controllers\Controller
 	public $cached_time = 60;
 	public $model = null;
 	public $model_name = '';
-	public $model_namespace = 'Models\\';
+	public $model_namespace = 'App\\Models\\';
 	public $accept_update = null;
 	public $accept_insert = null;	
 	public $csv_meta = [ 'headers' => '', 'data' => [], 'file' => 'export.csv' ];
