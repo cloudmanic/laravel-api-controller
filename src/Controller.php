@@ -11,7 +11,7 @@ use \Validator;
 use \SplTempFileObject;
 use League\Csv\Writer;
 
-class Controller extends \App\Http\Controllers\Controller
+class Controller extends \Controller
 {
 	public $cached = false;
 	public $cached_time = 60;
