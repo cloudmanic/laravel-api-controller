@@ -333,6 +333,12 @@ class Model
 	//
 	public function delete_by_id($id)
 	{
+		// Set the account.
+		if(Me::get_account_id() && (! $this->no_account))
+		{
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Me::get_account_id());
+		}	  	
+  	
 		$this->set_col($this->table_prefix . $this->table_id_col, $id);
  		$this->db->delete();
  		
@@ -341,6 +347,31 @@ class Model
  		
  		return true;
 	}	
+	
+  //
+  // Delete All
+  //
+  public function delete_all()
+  {
+		// Set the account.
+		if(Me::get_account_id() && (! $this->no_account))
+		{
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Me::get_account_id());
+		}	    
+    
+    // Get data.
+    $data = $this->get();
+    
+    foreach($data AS $key => $row)
+    {
+      $this->delete_by_id($row[$this->table_prefix . $this->table_id_col]);
+    }
+
+		// Reset the query.
+		$this->_setup_query();		 		
+ 		
+ 		return true;
+	}	    
 	
 	//
 	// Get count.
