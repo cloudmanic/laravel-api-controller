@@ -337,6 +337,12 @@ class Controller extends \Controller
 		{
 			$this->model->set_search(Input::get('search'));
 		}
+
+		// Set since
+		if(Input::get('since') && (method_exists($this->model, 'set_since')))
+		{
+			$this->model->set_since(Input::get('since'));
+		}
 		
 		// Set extra
 		if(Input::get('extra') && (method_exists($this->model, 'set_extra')))
