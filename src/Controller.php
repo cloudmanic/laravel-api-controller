@@ -83,6 +83,19 @@ class Controller extends \Controller
 			Cache::put($hash, $data, $this->cached_time);
 		}
 		
+    // Just return a list of ids.
+    if(Input::get('ids'))
+    {
+      $ids = [];
+      
+      foreach($data AS $key => $row)
+      {
+        $ids[] = $row[$this->model->table_prefix . $this->model->table_id_col];
+      }
+      
+      $data = $ids;
+    }
+		
 		return $this->api_response($data);
 	}
 	
