@@ -34,3 +34,10 @@ class Products extends \Cloudmanic\LaravelApi\Model
 
 }
 ```
+
+Helper Functions
+======================
+
+Use this call to return a list of ids that have been deleted.
+
+```Route::post('system/get_deleted', 'Cloudmanic\LaravelApi\Helper@get_deleted');``` 
