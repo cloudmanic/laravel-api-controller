@@ -425,7 +425,8 @@ class Controller extends \Controller
 			'total' => ($this->model) ? $this->model->get_total() : 0,
 			'filtered' => 0,
 			'errors' => [],
-			'hash' => md5(json_encode($data))
+			'hash' => md5(json_encode($data)),
+			'timestamp' => date('Y-m-d H:i:s')
 		];
 		
 		// If we are doing a search or some sort of filter with a limit we need to figure out how 
