@@ -221,6 +221,16 @@ class Model
 		return $data;
 	}
 	
+	// 
+	// Get the first result
+	//
+	public function first()
+	{
+  	$this->set_limit(1);
+  	$d = $this->get();
+  	return (isset($d[0])) ? $d[0] : false;
+	}
+	
 	//
 	// Get...
 	// 
