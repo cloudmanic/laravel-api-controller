@@ -22,7 +22,7 @@ class Model
 	public $joins = null;
 	public $export_cols = [];
 	public $no_account = false;		
-	protected $db = null;	
+	public $db = null;	
 	protected $_extra = false;		
 	protected $_is_api = false;	
 
