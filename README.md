@@ -5,7 +5,9 @@ A special controller class for API responses the Cloudmanic Labs way.
 
 Version 1.0 for Laravel 4.x
 
-Version 2.0 for Laravel 5.x
+Version 2.0 for Laravel 5.0 - 5.1
+
+Version 2.0 for Laravel 5.2
 
 Sample Controller (Laravel 5.x)
 ======================
