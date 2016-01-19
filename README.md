@@ -17,10 +17,8 @@ Sample Controller (Laravel 5.x)
 
 namespace App\Http\Controllers\Api\V1;
 	
-class Products extends \App\Http\Controllers\Controller
-{
-	use \Cloudmanic\LaravelApi\Traits\Controller;
-	
+class Products extends \Cloudmanic\LaravelApi\Controller
+{	
 	public $validation_create = [];
 	public $validation_update = [];	
 }
@@ -34,10 +32,12 @@ Sample Model
 ```
 <?php
 
-namespace Models;
+namespace App\Models;
 
 class Products extends \Cloudmanic\LaravelApi\Model
 {
 
 }
+
+/* End File */
 ```

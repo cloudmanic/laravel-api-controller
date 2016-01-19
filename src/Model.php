@@ -4,13 +4,14 @@
 // By: Spicer Matthews 
 // Email: spicer@cloudmanic.com
 // Website: http://cloudmanic.com
-// Date: 2/12/2014
+// Date: 1/19/2016
 // Note: Non-Cloudmanic Product Version.
 //
 
 namespace Cloudmanic\LaravelApi;
 
-use \DB;
+use DB;
+use Auth;
 
 class Model
 {	
@@ -248,9 +249,9 @@ class Model
 		}		
 		
 		// Set the account.
-		if(Me::get_account_id() && (! $this->no_account))
+		if(Auth::user()->AccountId && (! $this->no_account))
 		{
-			$this->db->where($this->table_prefix . $this->table_account_col, '=', Me::get_account_id());
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Auth::user()->AccountId);
 		}			
 		
 		// Query

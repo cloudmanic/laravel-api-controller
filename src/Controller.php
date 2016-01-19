@@ -2,17 +2,18 @@
 
 namespace Cloudmanic\LaravelApi;
 
-use \App;
-use \Cache;
-use \Input;
-use \Request;
-use \Response;
-use \Validator;
-use \SplTempFileObject;
+use App;
+use Cache;
+use Request;
+use Response;
+use Validator;
+use SplTempFileObject;
 use League\Csv\Writer;
 
 class Controller extends \App\Http\Controllers\Controller
 {
+  protected $request = null;
+  
 	public $cached = false;
 	public $cached_time = 60;
 	public $model = null;
@@ -31,6 +32,9 @@ class Controller extends \App\Http\Controllers\Controller
 	//
 	public function __construct()
 	{		
+    // Store the request.
+    $this->request = request();
+  	
 		// Guess the model.
 		if(empty($this->model_name))
 		{
@@ -54,8 +58,8 @@ class Controller extends \App\Http\Controllers\Controller
 	public function get()
 	{
 		// Request hash.
-		$hash = 'api-' . md5(Request::getUri());
-	
+		$hash = 'api-' . md5($this->request->fullUrl());
+			
 		// Is this a cached response?	
 		if($this->cached)
 		{
@@ -93,7 +97,7 @@ class Controller extends \App\Http\Controllers\Controller
 	public function id($_id)
 	{
 		// Request hash.
-		$hash = 'api-' . md5(Request::getUri());
+		$hash = 'api-' . md5($this->request->fullUrl());
 		
 		// Is this a cached response?	
 		if($this->cached)
@@ -161,7 +165,7 @@ class Controller extends \App\Http\Controllers\Controller
 			$input = Input::only(implode(',', $this->accept_insert));
 		} else
 		{
-			$input = Input::get();
+			$input = $this->request->input();
 		}
 		
 		// Load model and insert data.
@@ -217,7 +221,7 @@ class Controller extends \App\Http\Controllers\Controller
 			$input = Input::only(implode(',', $this->accept_update));
 		} else
 		{
-			$input = Input::get();
+			$input = $this->request->input();
 		}
 		
 		// Load model and insert data.
@@ -248,7 +252,7 @@ class Controller extends \App\Http\Controllers\Controller
 		// So we can support posts as well.
 		if(is_null($_id))
 		{
-			$_id = Input::get('Id');
+			$_id = $this->request->input('Id');
 		}
 
 		$this->model->delete_by_id($_id);
@@ -279,69 +283,69 @@ class Controller extends \App\Http\Controllers\Controller
 		}
 	
 		// Setup column selectors
-		$cols = array_keys(Input::get());
+		$cols = array_keys($this->request->all());
 		foreach($cols AS $key => $row)
 		{
 			if(preg_match('/^(col_)/', $row))
 			{
-				if(Input::get($row) || (Input::get($row) == '0'))
+				if($this->request->input($row) || ($this->request->input($row) == '0'))
 				{
 					$col = str_replace('col_', '', $row);
 					
 					if(method_exists($this->model, 'set_col'))
 					{
-						$this->model->set_col($col, Input::get($row));
+						$this->model->set_col($col, $this->request->input($row));
 					}
 				}
 			}
 		}
 	
 		// Order by...
-		if(Input::get('order'))
+		if($this->request->input('order'))
 		{
-			if(Input::get('sort'))
+			if($this->request->input('sort'))
 			{
 				if(method_exists($this->model, 'set_order'))
 				{
-					$this->model->set_order(Input::get('order'), Input::get('sort'));
+					$this->model->set_order($this->request->input('order'), $this->request->input('sort'));
 				}
 			} else
 			{
 				if(method_exists($this->model, 'set_order'))
 				{
-					$this->model->set_order(Input::get('order'));				
+					$this->model->set_order($this->request->input('order'));				
 				}
 			}
 		}
 		
 		// Select columns...
-		if(Input::get('select') && (method_exists($this->model, 'set_select')))
+		if($this->request->input('select') && (method_exists($this->model, 'set_select')))
 		{
-			$this->model->set_select(explode(',', Input::get('select')));
+			$this->model->set_select(explode(',', $this->request->input('select')));
 		}
 		
 		// Set limit...
-		if($limit && Input::get('limit') && (method_exists($this->model, 'set_limit')))
+		if($limit && $this->request->input('limit') && (method_exists($this->model, 'set_limit')))
 		{
-			$this->model->set_limit(Input::get('limit'));
+			$this->model->set_limit($this->request->input('limit'));
 		}
 		
 		// Set offset...
-		if($limit && Input::get('offset') && Input::get('limit') && (method_exists($this->model, 'set_offset')))
+		if($limit && $this->request->input('offset') && $this->request->input('limit') && (method_exists($this->model, 'set_offset')))
 		{
-			$this->model->set_offset(Input::get('offset'));
+			$this->model->set_offset($this->request->input('offset'));
 		}
 		
 		// Set search....
-		if(Input::get('search') && (method_exists($this->model, 'set_search')))
+		if($this->request->input('search') && (method_exists($this->model, 'set_search')))
 		{
-			$this->model->set_search(Input::get('search'));
+			$this->model->set_search($this->request->input('search'));
 		}
 		
 		// Set extra
-		if(Input::get('extra') && (method_exists($this->model, 'set_extra')))
+		if($this->request->input('extra') && (method_exists($this->model, 'set_extra')))
 		{
-			$this->model->set_extra(Input::get('extra'));
+			$this->model->set_extra($this->request->input('extra'));
 		}
 	}	
 	
@@ -400,8 +404,8 @@ class Controller extends \App\Http\Controllers\Controller
 		$rt = [
 			'status' => $status,
 			'data' => (! is_null($data)) ? $data : [],
-			'limit' => (Input::get('limit')) ? (int) Input::get('limit') : 0,
-			'offset' => (Input::get('offset')) ? (int) Input::get('offset') : 0,
+			'limit' => ($this->request->input('limit')) ? (int) $this->request->input('limit') : 0,
+			'offset' => ($this->request->input('offset')) ? (int) $this->request->input('offset') : 0,
 			'count' => (! is_null($data)) ? count($data) : 0,
 			'total' => ($this->model) ? $this->model->get_total() : 0,
 			'filtered' => 0,
@@ -411,7 +415,7 @@ class Controller extends \App\Http\Controllers\Controller
 		
 		// If we are doing a search or some sort of filter with a limit we need to figure out how 
 		// the total number of results without the limit or offset.
-		if(Input::get('limit'))
+		if($this->request->input('limit'))
 		{
 			$this->_setup_query(false);
 			$rt['filtered'] = $this->model->get_total();
@@ -434,13 +438,13 @@ class Controller extends \App\Http\Controllers\Controller
 		}		
 		
 		// Sometimes we just want to return just the hash of the data.
-		if(Input::get('only_hash') && isset($rt['hash']))
+		if($this->request->input('only_hash') && isset($rt['hash']))
 		{				  
 			$rt = [ 'status' => 1, 'hash' => $rt['hash'] ];
 		}
 		
 		// Format the return in the output passed in.
-		switch(Input::get('format'))
+		switch($this->request->input('format'))
 		{
 			case 'php':			
 			case 'human':
@@ -448,9 +452,9 @@ class Controller extends \App\Http\Controllers\Controller
 			break;
 			
 			case 'jsonp':
-				if(Input::get('callback'))
+				if($this->request->input('callback'))
 				{
-				  return Input::get('callback') . '(' . json_encode($rt) . ')';
+				  return $this->request->input('callback') . '(' . json_encode($rt) . ')';
 				}
 		
 				return 'callback(' . json_encode($rt) . ')';
