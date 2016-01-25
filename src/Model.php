@@ -249,9 +249,9 @@ class Model
 		}		
 		
 		// Set the account.
-		if(Auth::user()->AccountId && (! $this->no_account))
+		if((! $this->no_account) && Auth::user()->AccountsId)
 		{
-			$this->db->where($this->table_prefix . $this->table_account_col, '=', Auth::user()->AccountId);
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Auth::user()->AccountsId);
 		}			
 		
 		// Query
@@ -299,9 +299,9 @@ class Model
 		$data['updated_at'] = date('Y-m-d G:i:s');		
 	
 		// Set the account.
-		if(Me::get_account_id() && (! $this->no_account))
+		if((! $this->no_account) && Auth::user()->AccountsId)
 		{
-			$data[$this->table_prefix . $this->table_account_col] = Me::get_account_id();	
+			$data[$this->table_prefix . $this->table_account_col] = Auth::user()->AccountsId;	
 		}
 		
  		// Insert the data / clear the query and return the ID.
@@ -326,9 +326,9 @@ class Model
 		$this->set_col($this->table_prefix . $this->table_id_col, $id);
 	
 		// Set the account.
-		if(Me::get_account_id() && (! $this->no_account))
+		if((! $this->no_account) && Auth::user()->AccountsId)
 		{
-			$data[$this->table_prefix . $this->table_account_col] = Me::get_account_id();	
+			$data[$this->table_prefix . $this->table_account_col] = Auth::user()->AccountsId;	
 		}	
 	
 		$rt = $this->db->update($this->_set_data($data));
@@ -345,9 +345,9 @@ class Model
 	public function delete_by_id($id)
 	{
 		// Set the account.
-		if(Me::get_account_id() && (! $this->no_account))
+		if((! $this->no_account) && Auth::user()->AccountsId)
 		{
-			$this->db->where($this->table_prefix . $this->table_account_col, '=', Me::get_account_id());
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Auth::user()->AccountsId);
 		}	  	
   	
 		$this->set_col($this->table_prefix . $this->table_id_col, $id);
@@ -365,9 +365,9 @@ class Model
   public function delete_all()
   {
 		// Set the account.
-		if(Me::get_account_id() && (! $this->no_account))
+		if((! $this->no_account) && Auth::user()->AccountsId)
 		{
-			$this->db->where($this->table_prefix . $this->table_account_col, '=', Me::get_account_id());
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Auth::user()->AccountsId);
 		}	    
     
     // Get data.
@@ -413,9 +413,9 @@ class Model
 	public function get_total()
 	{
 		// Set the account.
-		if(Me::get_account_id() && (! $this->no_account))
+		if((! $this->no_account) && Auth::user()->AccountsId)
 		{
-			$this->db->where($this->table_prefix . $this->table_account_col, '=', Me::get_account_id());
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Auth::user()->AccountsId);
 		}		
 	
 		return $this->db->count();
