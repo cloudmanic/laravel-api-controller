@@ -48,3 +48,11 @@ Notes
 We must configure which guard we are using early in the auth process
 
 ```config([ 'app.guard' => 'web' ]);```
+
+Install the middleware in app/Http/Kernel.php
+
+``` 
+    protected $routeMiddleware = [
+        'auth' => \Cloudmanic\LaravelApi\AuthMiddleware::class,
+    ];
+ ```

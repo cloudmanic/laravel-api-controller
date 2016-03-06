@@ -11,7 +11,6 @@
 namespace Cloudmanic\LaravelApi;
 
 use DB;
-use Auth;
 
 class Model
 {	
@@ -249,9 +248,9 @@ class Model
 		}		
 		
 		// Set the account.
-		if((! $this->no_account) && Auth::guard(config('app.guard'))->user()->AccountsId)
+		if((! $this->no_account) && Me::get_account_id())
 		{
-			$this->db->where($this->table_prefix . $this->table_account_col, '=', Auth::guard(config('app.guard'))->user()->AccountsId);
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Me::get_account_id());
 		}			
 		
 		// Query
@@ -299,9 +298,9 @@ class Model
 		$data['updated_at'] = date('Y-m-d G:i:s');		
 	
 		// Set the account.
-		if((! $this->no_account) && Auth::guard(config('app.guard'))->user()->AccountsId)
+		if((! $this->no_account) && Me::get_account_id())
 		{
-			$data[$this->table_prefix . $this->table_account_col] = Auth::guard(config('app.guard'))->user()->AccountsId;	
+			$data[$this->table_prefix . $this->table_account_col] = Me::get_account_id();	
 		}
 		
  		// Insert the data / clear the query and return the ID.
@@ -326,9 +325,9 @@ class Model
 		$this->set_col($this->table_prefix . $this->table_id_col, $id);
 	
 		// Set the account.
-		if((! $this->no_account) && Auth::guard(config('app.guard'))->user()->AccountsId)
+		if((! $this->no_account) && Me::get_account_id())
 		{
-			$data[$this->table_prefix . $this->table_account_col] = Auth::guard(config('app.guard'))->user()->AccountsId;	
+			$data[$this->table_prefix . $this->table_account_col] = Me::get_account_id();	
 		}	
 	
 		$rt = $this->db->update($this->_set_data($data));
@@ -345,9 +344,9 @@ class Model
 	public function delete_by_id($id)
 	{
 		// Set the account.
-		if((! $this->no_account) && Auth::guard(config('app.guard'))->user()->AccountsId)
+		if((! $this->no_account) && Me::get_account_id())
 		{
-			$this->db->where($this->table_prefix . $this->table_account_col, '=', Auth::guard(config('app.guard'))->user()->AccountsId);
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Me::get_account_id());
 		}	  	
   	
 		$this->set_col($this->table_prefix . $this->table_id_col, $id);
@@ -365,9 +364,9 @@ class Model
   public function delete_all()
   {
 		// Set the account.
-		if((! $this->no_account) && Auth::guard(config('app.guard'))->user()->AccountsId)
+		if((! $this->no_account) && Me::get_account_id())
 		{
-			$this->db->where($this->table_prefix . $this->table_account_col, '=', Auth::guard(config('app.guard'))->user()->AccountsId);
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Me::get_account_id());
 		}	    
     
     // Get data.
@@ -413,9 +412,9 @@ class Model
 	public function get_total()
 	{
 		// Set the account.
-		if((! $this->no_account) && Auth::guard(config('app.guard'))->user()->AccountsId)
+		if((! $this->no_account) && Me::get_account_id())
 		{
-			$this->db->where($this->table_prefix . $this->table_account_col, '=', Auth::guard(config('app.guard'))->user()->AccountsId);
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Me::get_account_id());
 		}		
 	
 		return $this->db->count();
