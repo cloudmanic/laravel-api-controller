@@ -41,3 +41,10 @@ class Products extends \Cloudmanic\LaravelApi\Model
 
 /* End File */
 ```
+
+Notes
+======================
+
+We must configure which guard we are using early in the auth process
+
+```config([ 'app.guard' => 'web' ]);```
