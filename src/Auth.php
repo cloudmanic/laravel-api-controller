@@ -78,10 +78,9 @@ class Auth
   //
   // Log a user in.
   //
-  public static function login($user_id)
+  public static function login($user_id, $account_id = null)
   {
-    $accounts = []; 
-    $account_id = null;   
+    $accounts = [];  
     
     // Get the user.
     if(! $user = (array) DB::table('Users')->where('UsersId', $user_id)->first())
@@ -112,12 +111,15 @@ class Auth
     session([ 'LoggedIn' => $user['UsersId'] ]);
     
     // Do we have an account id to work from?
-    if(request()->input('account_id'))
+    if(is_null($account_id))
     {
-      $account_id = request()->input('account_id');
-    } else if(session()->has('AccountsId'))
-    {
-      $account_id = session()->has('AccountsId');      
+      if(request()->input('account_id'))
+      {
+        $account_id = request()->input('account_id');
+      } else if(session()->has('AccountsId'))
+      {
+        $account_id = session()->has('AccountsId');      
+      }
     }
     
     // Set the default account id.
