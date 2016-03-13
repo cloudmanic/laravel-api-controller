@@ -8,10 +8,26 @@
 namespace Cloudmanic\LaravelApi;
 
 use DB;
+use App;
 use Crypt;
+use Illuminate\Contracts\Auth\Guard;
 
 class Auth
 {  
+  //
+  // Logout.
+  //
+  public static function logout()
+  {
+    // Flush session
+    session()->flush();
+    
+    // Delete all sessions for this user.
+    DB::table('Sessions')->where('user', Me::get('UsersId'))->delete();
+    
+    return true;    
+  }
+  
   //
   // Attempt to log a user in.
   //
@@ -121,6 +137,9 @@ class Auth
       session([ 'AccountsId' => $accounts[0]['AccountsId'] ]); 
     }
     
+    // Update session table with user id. (we use our own custom field to not muck with laravel)
+    DB::table(config('session.table'))->where('id', session()->getId())->update([ 'user' => $user_id ]);
+
     // Return happy
     return true;
   }
