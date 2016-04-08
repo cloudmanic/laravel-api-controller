@@ -342,6 +342,30 @@ class Model
  		return true;
 	}	
 	
+  //
+  // Delete All
+  //
+  public function delete_all()
+  {
+		// Set the account.
+		if((! $this->no_account) && Me::get_account_id())
+		{
+			$this->db->where($this->table_prefix . $this->table_account_col, '=', Me::get_account_id());
+		}	    
+    
+    // Get data.
+    $data = $this->get();
+    
+    foreach($data AS $key => $row)
+    {
+      $this->delete_by_id($row[$this->table_prefix . $this->table_id_col]);
+    }
+		// Reset the query.
+		$this->_setup_query();		 		
+ 		
+ 		return true;
+	}	
+	
 	//
 	// Get count.
 	//
