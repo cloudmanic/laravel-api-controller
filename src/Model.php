@@ -303,8 +303,17 @@ class Model
 			$data[$this->table_prefix . $this->table_account_col] = Me::get_account_id();	
 		}
 		
+		// Set the data
+		$insert = $this->_set_data($data);
+		
+		// Do some data clean up
+		if(method_exists($this, '_data_clean'))
+		{
+		  $this->_data_clean($data);
+		}
+		
  		// Insert the data / clear the query and return the ID.
- 		$this->db->insert($this->_set_data($data));
+ 		$this->db->insert($insert);
  		$id = DB::connection($this->connection)->getPdo()->lastInsertId();
  		
 		// Reset the query.

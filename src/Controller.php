@@ -171,6 +171,12 @@ class Controller extends \App\Http\Controllers\Controller
 		// Load model and insert data.
 		$data['Id'] = $this->model->insert($input);	
 		
+    // Sometimes we want to include the object we just inserted
+    if($this->request->input('return') == 'object')
+    {
+      $data['Object'] = $this->model->get_by_id($data['Id']);
+    }
+		
 		// A hook before we go any further.
 		if(method_exists($this, '_after_insert'))
 		{
@@ -371,15 +377,15 @@ class Controller extends \App\Http\Controllers\Controller
 		
 		// If we have rules we validate.
 		if(is_array($rules) && (count($rules > 0)))
-		{
-			$validation = Validator::make(Input::all(), $rules, $this->validation_message);
+		{  		
+			$validation = Validator::make($this->request->input(), $rules, $this->validation_message);
 		
 			if($validation->fails())
 			{
 				$errors = [];
 			  $messages = $validation->messages();
 			  
-				foreach(Input::all() AS $key => $row)
+				foreach($this->request->input() AS $key => $row)
 				{
 					if($messages->has($key))
 					{

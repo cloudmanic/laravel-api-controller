@@ -56,3 +56,10 @@ Install the middleware in app/Http/Kernel.php
         'auth' => \Cloudmanic\LaravelApi\AuthMiddleware::class,
     ];
  ```
+ 
+ Inserting data we can pass in the following and get back the complete object we just inserted (via get_by_id())
+ 
+ ```
+ http://example.com/api/v1/blah/create?return=object
+ 
+ ```
