@@ -222,6 +222,15 @@ class Model
 	}
 	
 	//
+	// Get the first result.
+	//
+	public function first()
+	{
+  	$data = $this->get();
+  	return (isset($data[0])) ? $data[0] : false;
+	}
+	
+	//
 	// Get...
 	// 
 	public function get()
